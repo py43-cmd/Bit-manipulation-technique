@@ -1,0 +1,117 @@
+// Contribution Technique - Advanced Problems
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+/*
+PROBLEM: Sum of minimum values in all subarrays
+APPROACH: For each element, find in how many subarrays it is minimum
+
+Use monotonic stack to find:
+- Left: nearest smaller element
+- Right: nearest smaller element
+*/
+
+long long sumMinAllSubarrays(vector<int>& arr) {
+    int n = arr.size();
+    long long answer = 0;
+    
+    // Stack to find nearest smaller element
+    stack<int> st;
+    
+    for(int i = 0; i < n; i++) {
+        // Pop elements greater than current
+        while(!st.empty() && arr[st.top()] >= arr[i]) {
+            int idx = st.top();
+            st.pop();
+            
+            // Left: index of nearest smaller element to left
+            int left = st.empty() ? -1 : st.top();
+            
+            // Right: current index
+            int right = i;
+            
+            // arr[idx] is minimum in (left+1) to (right-1)
+            long long leftCount = idx - left;
+            long long rightCount = right - idx;
+            
+            answer += arr[idx] * leftCount * rightCount;
+        }
+        
+        st.push(i);
+    }
+    
+    // Process remaining elements
+    while(!st.empty()) {
+        int idx = st.top();
+        st.pop();
+        
+        int left = st.empty() ? -1 : st.top();
+        int right = n;
+        
+        long long leftCount = idx - left;
+        long long rightCount = right - idx;
+        
+        answer += arr[idx] * leftCount * rightCount;
+    }
+    
+    return answer;
+}
+
+/*
+SIMILAR APPROACH: Sum of maximum values in all subarrays
+Key difference: Find nearest GREATER element instead of smaller
+*/
+
+long long sumMaxAllSubarrays(vector<int>& arr) {
+    int n = arr.size();
+    long long answer = 0;
+    
+    stack<int> st;
+    
+    for(int i = 0; i < n; i++) {
+        while(!st.empty() && arr[st.top()] <= arr[i]) {
+            int idx = st.top();
+            st.pop();
+            
+            int left = st.empty() ? -1 : st.top();
+            int right = i;
+            
+            long long leftCount = idx - left;
+            long long rightCount = right - idx;
+            
+            answer += arr[idx] * leftCount * rightCount;
+        }
+        
+        st.push(i);
+    }
+    
+    while(!st.empty()) {
+        int idx = st.top();
+        st.pop();
+        
+        int left = st.empty() ? -1 : st.top();
+        int right = n;
+        
+        long long leftCount = idx - left;
+        long long rightCount = right - idx;
+        
+        answer += arr[idx] * leftCount * rightCount;
+    }
+    
+    return answer;
+}
+
+int main() {
+    vector<int> arr = {1, 4, 3, 2};
+    
+    cout << "Array: ";
+    for(int x : arr) cout << x << " ";
+    cout << endl;
+    
+    cout << "Sum of min in all subarrays: " << sumMinAllSubarrays(arr) << endl;
+    cout << "Sum of max in all subarrays: " << sumMaxAllSubarrays(arr) << endl;
+    
+    return 0;
+}

@@ -1,0 +1,152 @@
+// ============================================================================
+// CYCLIC PROPERTY OF BITS - Complete Guide for Competitive Programming
+// ============================================================================
+// Author: Bit Manipulation Expert
+// Date: 2026-03-22
+// Topics: Rotation, XOR Cycles, Gray Code, Modulo, Hamming Distance
+// ============================================================================
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// ============================================================================
+// 1. BIT ROTATION - LEFT AND RIGHT ROTATION
+// ============================================================================
+
+// Left rotate by k positions (cyclic property: after 32 rotations, returns to original)
+int leftRotate(int num, int k) {
+    int n = 32;  // for 32-bit integer
+    k = k % n;   // Cyclic: k % n (key cyclic property!)
+    return (num << k) | (num >> (n - k));
+}
+
+// Right rotate by k positions
+int rightRotate(int num, int k) {
+    int n = 32;
+    k = k % n;
+    return (num >> k) | (num << (n - k));
+}
+
+// Left rotate for 64-bit long long
+long long leftRotate64(long long num, int k) {
+    int n = 64;
+    k = k % n;
+    return (num << k) | (num >> (n - k));
+}
+
+// ============================================================================
+// 2. CYCLIC XOR PROPERTY
+// ============================================================================
+
+// XOR property: a ^ x ^ x = a (returns to original after 2 XORs)
+void xorCyclicDemo() {
+    cout << "\n=== XOR CYCLIC PROPERTY ===" << endl;
+    
+    int a = 15;
+    int x = 7;
+    
+    cout << "Original: " << a << endl;
+    int after_first_xor = a ^ x;
+    cout << "After XOR with " << x << ": " << after_first_xor << endl;
+    
+    int after_second_xor = after_first_xor ^ x;
+    cout << "After XOR with " << x << " again: " << after_second_xor << endl;
+    cout << "Back to original: " << (after_second_xor == a ? "YES" : "NO") << endl;
+}
+
+// Swap two numbers using XOR (cyclic property)
+void swapUsingXOR(int& a, int& b) {
+    a = a ^ b;  // a now contains a^b
+    b = a ^ b;  // b now contains (a^b)^b = a
+    a = a ^ b;  // a now contains (a^b)^a = b
+}
+
+// ============================================================================
+// 3. GRAY CODE - CYCLIC NEIGHBORS (Each consecutive number differs by 1 bit)
+// ============================================================================
+
+// Convert binary to Gray code
+int binaryToGray(int n) {
+    return n ^ (n >> 1);
+}
+
+// Convert Gray code back to binary
+int grayToBinary(int gray) {
+    int binary = gray;
+    while (gray) {
+        gray >>= 1;
+        binary ^= gray;
+    }
+    return binary;
+}
+
+// Hamming distance (number of different bits)
+int hammingDistance(int x, int y) {
+    int xor_result = x ^ y;
+    return __builtin_popcount(xor_result);
+}
+
+void grayCodeCyclicDemo() {
+    cout << "\n=== GRAY CODE CYCLIC PROPERTY ===" << endl;
+    cout << "Binary | Gray | Hamming Distance to Next" << endl;
+    
+    for (int i = 0; i < 8; i++) {
+        int gray1 = binaryToGray(i);
+        int gray2 = binaryToGray((i + 1) % 8);
+        int distance = hammingDistance(gray1, gray2);
+        
+        cout << i << " | " << gray1 << " | " << distance << endl;
+    }
+    
+    cout << "\nKey: Every consecutive Gray code differs by exactly 1 bit (cyclic!)" << endl;
+}
+
+// ============================================================================
+// 4. CYCLIC PROPERTY IN MODULAR ARITHMETIC WITH BITS
+// ============================================================================
+
+// num % (1 << k) == num & ((1 << k) - 1)
+// Demonstrates cyclic pattern with powers of 2
+void modularArithmeticCyclic() {
+    cout << "\n=== MODULAR ARITHMETIC CYCLIC PROPERTY ===" << endl;
+    
+    int num = 23;
+    int k = 3;
+    int divisor = (1 << k);  // 2^3 = 8
+    int mask = divisor - 1;   // 7 (0111 in binary)
+    
+    cout << "Number: " << num << ", k: " << k << ", divisor: " << divisor << endl;
+    cout << "Using modulo: " << (num % divisor) << endl;
+    cout << "Using bitwise AND: " << (num & mask) << endl;
+    
+    // Show cyclic pattern
+    cout << "\nCyclic pattern (cycling every " << divisor << " numbers):" << endl;
+    for (int i = 0; i < 20; i++) {
+        cout << ((num + i) % divisor) << " ";
+    }
+    cout << endl;
+}
+
+// ============================================================================
+// 5. BIT ROTATION - FINDING CYCLE LENGTH
+// ============================================================================
+
+// Find cycle length when rotating bits
+int findRotationCycleLength(int num, int rotateBits) {
+    int original = num;
+    int count = 0;
+    
+    do {
+        num = leftRotate(num, rotateBits);
+        count++;
+        if (count > 100) break;  // Safety check
+    } while (num != original && count < 100);
+    
+    return count;
+}
+
+void rotationCycleLengthDemo() {
+    cout << "\n=== ROTATION CYCLE LENGTH ===" << endl;
+    
+    
+

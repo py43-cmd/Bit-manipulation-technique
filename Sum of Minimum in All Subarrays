@@ -1,0 +1,18 @@
+int n = arr.size();
+long long answer = 0;
+
+for(int i = 0; i < n; i++) {
+    // Find left: how many elements to left that are >= arr[i]
+    int left = i;
+    while(left > 0 && arr[left-1] >= arr[i]) left--;
+    
+    // Find right: how many elements to right that are > arr[i]
+    int right = i;
+    while(right < n-1 && arr[right+1] > arr[i]) right++;
+    
+    // In how many subarrays is arr[i] minimum?
+    long long leftCount = i - left + 1;
+    long long rightCount = right - i + 1;
+    
+    answer += arr[i] * leftCount * rightCount;
+}

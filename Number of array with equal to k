@@ -1,0 +1,30 @@
+class Solution {
+public:
+    long long countSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        long long count = 0;
+        map<int, int> prev_end;
+        map<int , long long > all_freq;
+        for (int i = n - 1; i >= 0; i--) {
+            map<int, int> new_ends;
+            for (auto v : prev_end) {
+                new_ends[v.first & nums[i]] =
+                    max(new_ends[v.first & nums[i]], v.second);
+            }
+            new_ends[nums[i]] = max(new_ends[nums[i]], i);
+            vector<pair<int, int>> ranges(new_ends.begin(), new_ends.end());
+            reverse(ranges.begin(), ranges.end());
+            for (int en = 0; en < ranges.size(); en++) {
+                if (en == 0) {
+                    all_freq[ranges[en].first] += ranges[en].second - i + 1;
+                } else {
+                    all_freq[ranges[en].first] +=
+                        ranges[en].second - ranges[en - 1].second;
+                }
+            }
+
+            prev_end = new_ends;
+        }
+        return all_freq[k];
+    }
+};
